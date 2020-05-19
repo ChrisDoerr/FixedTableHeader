@@ -1,31 +1,28 @@
 
-const FIXED_TABLE_HEADER_CONTEXT_MENU_ID  = "FIXED_TABLE_HEADER_MENU";
-var fth_browserObj                        = ( "object" === typeof chrome ? chrome : browser );
-
-function fixTableHeader( info, tab ) {
+const FIXED_TABLE_HEADER = {
+  menuId      : "FIXED_TABLE_HEADER_MENU_ID",
+  browser     : ( "object" === typeof chrome ? chrome : browser ),
+  sendCommand : function( info, tab ) {
   
-  // console.log( "ITEM WAS CLICKED" );
-  
-  // Send message to content script
-  fth_browserObj.tabs.sendMessage(
-    tab.id,
-    {
-      command : "fixTableHeader"
-    },
-    function( response ) {
-      
-      // console.log( response );
-
-    }
+    // Send message to content script
+    FIXED_TABLE_HEADER.browser.tabs.sendMessage(
+      tab.id,
+      {
+        command : "fixTableHeader"
+      },
+      function( response ) {
+        // console.log( response );
+      }
   );
-  
-}
+  }
+};
 
-fth_browserObj.contextMenus.create({
-  id        : FIXED_TABLE_HEADER_CONTEXT_MENU_ID,
+FIXED_TABLE_HEADER.browser.contextMenus.create({
+  id        : FIXED_TABLE_HEADER.menuId,
   title     : "Fix Table Header",
   contexts  : [
     "page"
   ]
 });
-fth_browserObj.contextMenus.onClicked.addListener( fixTableHeader );
+
+FIXED_TABLE_HEADER.browser.contextMenus.onClicked.addListener( FIXED_TABLE_HEADER.sendCommand );
