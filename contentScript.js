@@ -115,12 +115,25 @@ FixedTableHeaderExtension.executeCommand  = function() {
     }
 
     FixedTableHeaderExtension.tr          = firstRow;
-    FixedTableHeaderExtension.stickyPos   = FixedTableHeaderExtension.tr.offsetTop;
+    FixedTableHeaderExtension.stickyPos   = firstRow.offsetTop;
 
+    /**
+     * Set the WIDTH of first row cell elements to current width
+     * but FIXED via CSS so it won't change when pinned to the top
+     * of the page (when scrolling position has been reached etc).
+     */
+    let firstRowCells                     = null;
 
+    // First row containes TH or TD elements
+    firstRowCells                         = firstRow.querySelectorAll( "th, td" );
 
+    if( null === firstRowCells || firstRowCells.length === 0 ) {
+      return;
+    }
 
+    FixedTableHeaderExtension.setWidthInStone( firstRowCells );
 
+    /*
     if( FixedTableHeaderExtension.target.tagName === "TH" ) {
     
         let p1                                  = FixedTableHeaderExtension.target.parentElement;
@@ -133,7 +146,6 @@ FixedTableHeaderExtension.executeCommand  = function() {
             FixedTableHeaderExtension.tr          = p1;
             FixedTableHeaderExtension.stickyPos   = FixedTableHeaderExtension.tr.offsetTop;
 
-            /***************/
             // Fix width of existing <th> elements
             let ths     = p1.querySelectorAll( "th" );
             let i       = 0;
@@ -157,11 +169,11 @@ FixedTableHeaderExtension.executeCommand  = function() {
               p2[i].style.width = p2[i].offsetWidth + "px";
         
             }
-            /***************/
           
         }
         
     }
+    */
 
 };
 
