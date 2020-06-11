@@ -1,17 +1,16 @@
 {
   "name"              : "Fixed Table Header",
-  "version"           : "1.0",
-  "description"       : "Fix a table header when scrolling through long tables.",
+  "version"           : "1.1",
+  "description"       : "Fix a table header's position when scrolling through long tables. Via the Right-Click->Context Menu.",
+  "author"            : "Chris Doerr",
   "manifest_version"  : 2,
   "background"        : {
-    "scripts"     : [
-      "backgroundScript.js"
-    ]
+    "scripts"     : [ "backgroundScript.js" ]
   },
   "content_scripts"   : [
     {
-      "matches" : ["<all_urls>"],
-      "js"      : ["contentScript.js"]
+      "matches"   : [ "<all_urls>" ],
+      "js"        : [ "contentScript.js" ]
     }
   ],
   "permissions"       : [

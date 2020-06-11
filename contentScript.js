@@ -1,5 +1,6 @@
 
 var FixedTableHeaderExtension   = {
+    browser         : ( "object" === typeof chrome ? chrome : browser ),
     cssHasBeenAdded : false,
     target          : null,
     headerRow       : null,
@@ -7,20 +8,93 @@ var FixedTableHeaderExtension   = {
     stickyPos       : 0
 };
 
-var fth_browserObj              = ( "object" === typeof chrome ? chrome : browser );
-
-
 FixedTableHeaderExtension.addCSS = function() {
 
     let fth_style       = document.createElement("style");
   
     fth_style.type      = "text/css";
     fth_style.innerHTML = ".stickyTableHeader { position: fixed; top: 0; background-color: #EEE; } ";
-  
+    
     document.getElementsByTagName("head")[0].appendChild( fth_style );
 
     FixedTableHeaderExtension.cssHasBeenAdded = true;
     
+};
+
+FixedTableHeaderExtension.findParentTable = function( element ) {
+  
+    if( !( element instanceof window.Node ) ) {
+      return false;
+    }
+    
+    let tagName   = element.tagName.trim().toLowerCase();
+    let isTable   = ( tagName === "table" );
+    let firstRow  = null;
+    
+    // Walk the DOM -UP- to the closest <tabel> parent element.
+    while( !isTable ) {
+      
+      element     = element.parentElement;
+      
+      // No parent element found
+      if( null === element ) {
+  
+        return false;
+  
+      }
+      
+      tagName     = element.tagName.trim().toLowerCase();
+  
+      isTable     = ( tagName === "table" );
+  
+      // Stop walking when the <body> or even the <html> tag has been reached.
+      if( tagName === "body" || tagName === "html" ) {
+  
+        return false;
+  
+      }
+      
+    }
+    
+    firstRow      = element.querySelector( "tr:first-child" );
+    
+    if( null === firstRow ) {
+  
+      return false;
+  
+    }
+  
+    return firstRow;
+    
+};
+
+/**
+ * Set the current element width (offsetWidth) "in stone"
+ * by applying CSS style width with the same value.
+ *  This way, even when the nominal width (offsetWidth) changes
+ * the diplayed/rendered width still stays the same because of
+ * the fix-valued CSS rule.
+ * 
+ * @param {NodeList} elements List of DOM elements of which the width should be set fix.
+ */
+FixedTableHeaderExtension.setWidthInStone = function( elements ) {
+
+  if(
+      "object" !== typeof elements ||
+      !( elements instanceof window.NodeList )
+  ) {
+    return;
+  }
+
+  let i                       = 0;
+  let dimElements             = element.length;
+
+  for( i = 0; i < dimElements; i += 1 ) {
+
+    elements[ i ].style.width = elements[ i ].offsetWidth + "px";
+
+  }
+
 };
 
 FixedTableHeaderExtension.executeCommand  = function() {
@@ -29,15 +103,29 @@ FixedTableHeaderExtension.executeCommand  = function() {
         return;
     }
 
+    // Only add the CSS <style> block once (per page)
     if( !FixedTableHeaderExtension.cssHasBeenAdded ) {
             FixedTableHeaderExtension.addCSS();
     }
+
+    let firstRow                          = FixedTableHeaderExtension.findParentTable( FixedTableHeaderExtension.target );
+
+    if( false === firstRow ) {
+      return;
+    }
+
+    FixedTableHeaderExtension.tr          = firstRow;
+    FixedTableHeaderExtension.stickyPos   = FixedTableHeaderExtension.tr.offsetTop;
+
+
+
+
 
     if( FixedTableHeaderExtension.target.tagName === "TH" ) {
     
         let p1                                  = FixedTableHeaderExtension.target.parentElement;
         let p2                                  = p1.parentElement.parentElement.querySelectorAll( "tbody tr:first-child td" );
-        
+
         FixedTableHeaderExtension.headerRow     = p1;
         
         if( p1.tagName === "TR" ) {
@@ -93,7 +181,7 @@ FixedTableHeaderExtension.checkTablePos = function() {
 
   }
   
-}
+};
 
 window.onscroll = function() {
   
@@ -109,7 +197,7 @@ document.addEventListener( "contextmenu", function( event ) {
 });
 
 // https://developer.chrome.com/extensions/messaging
-fth_browserObj.runtime.onMessage.addListener(
+FixedTableHeaderExtension.browser.runtime.onMessage.addListener(
     function( request, sender, sendResponse ) {
 
         let response = {
