@@ -10,12 +10,12 @@ var FixedTableHeaderExtension   = {
 
 FixedTableHeaderExtension.addCSS = function() {
 
-    let fth_style       = document.createElement("style");
+    let fth_style                             = document.createElement( "style" );
   
-    fth_style.type      = "text/css";
-    fth_style.innerHTML = ".stickyTableHeader { position: fixed; top: 0; background-color: #EEE; } ";
+    fth_style.type                            = "text/css";
+    fth_style.innerHTML                       = ".stickyTableHeader { position: fixed; top: 0; background-color: #EEE; } ";
     
-    document.getElementsByTagName("head")[0].appendChild( fth_style );
+    document.getElementsByTagName( "head" )[0].appendChild( fth_style );
 
     FixedTableHeaderExtension.cssHasBeenAdded = true;
     
@@ -100,7 +100,7 @@ FixedTableHeaderExtension.setWidthInStone = function( elements ) {
 FixedTableHeaderExtension.executeCommand  = function() {
 
     if( FixedTableHeaderExtension.target === null  ) {
-        return;
+      return;
     }
 
     // Only add the CSS <style> block once (per page)
@@ -201,14 +201,17 @@ window.onscroll = function() {
 
 };
 
-  
+/**
+ * Save the current element when RIGHT-CLICKING on a page,
+ * so in case "Fix Table Header" has been selected from the
+ * context menu it can used to find the proper table accordingly.
+ */  
 document.addEventListener( "contextmenu", function( event ) {
 
     FixedTableHeaderExtension.target = event.target;
 
 });
 
-// https://developer.chrome.com/extensions/messaging
 FixedTableHeaderExtension.browser.runtime.onMessage.addListener(
     function( request, sender, sendResponse ) {
 
