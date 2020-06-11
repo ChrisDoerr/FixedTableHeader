@@ -1,3 +1,4 @@
+"use strict";
 
 var FixedTableHeaderExtension   = {
     browser         : ( "object" === typeof chrome ? chrome : browser ),
@@ -87,7 +88,7 @@ FixedTableHeaderExtension.setWidthInStone = function( elements ) {
   }
 
   let i                       = 0;
-  let dimElements             = element.length;
+  let dimElements             = elements.length;
 
   for( i = 0; i < dimElements; i += 1 ) {
 

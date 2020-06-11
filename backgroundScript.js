@@ -1,3 +1,4 @@
+"use strict";
 
 const FIXED_TABLE_HEADER = {
   menuId      : "FIXED_TABLE_HEADER_MENU_ID",
